@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>ESSENS — Парфюмерная лавка</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #F6F1E7;
+    --paper-raised: #FBF8F2;
+    --ink: #2B211B;
+    --ink-soft: #6B6259;
+    --rule: rgba(43, 33, 27, 0.14);
+    --wine: #6E2A3C;
+    --wine-deep: #551F2E;
+    --brass: #9C7A3D;
+    --sage: #5C6B4F;
+    --powder: #9C5468;
+    --out-of-stock: #B7ADA0;
+    color-scheme: light;
+  }
+  :root:not([data-theme="light"]) {
+    @media (prefers-color-scheme: dark) {
+      --paper: #1C1712;
+      --paper-raised: #241E17;
+      --ink: #F1E9DD;
+      --ink-soft: #B8AA98;
+      --rule: rgba(241, 233, 221, 0.14);
+      --wine: #C97C8E;
+      --wine-deep: #A85F72;
+      --brass: #D3B36B;
+      --sage: #93A67F;
+      --powder: #D189A0;
+      --out-of-stock: #6B6259;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #1C1712;
+    --paper-raised: #241E17;
+    --ink: #F1E9DD;
+    --ink-soft: #B8AA98;
+    --rule: rgba(241, 233, 221, 0.14);
+    --wine: #C97C8E;
+    --wine-deep: #A85F72;
+    --brass: #D3B36B;
+    --sage: #93A67F;
+    --powder: #D189A0;
+    --out-of-stock: #6B6259;
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Work Sans', -apple-system, sans-serif;
+    min-height: 100vh;
+    padding-bottom: env(safe-area-inset-bottom, 0);
+    overflow-x: hidden;
+  }
+
+  .serif { font-family: 'Cormorant Garamond', Georgia, serif; }
+
+  /* ---------- Header ---------- */
+  header {
+    padding: 22px 20px 14px;
+    text-align: center;
+    border-bottom: 1px solid var(--rule);
+    position: sticky;
+    top: 0;
+    background: var(--paper);
+    z-index: 5;
+  }
+  header .wordmark {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 30px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    margin: 0;
+  }
+  header .tagline {
+    margin: 4px 0 0;
+    font-size: 12.5px;
+    color: var(--ink-soft);
+    letter-spacing: 0.03em;
+  }
+
+  /* ---------- Tabs ---------- */
+  nav.tabs {
+    display: flex;
+    gap: 22px;
+    padding: 14px 20px 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  nav.tabs::-webkit-scrollbar { display: none; }
+  nav.tabs button {
+    background: none;
+    border: none;
+    font-family: 'Work Sans', sans-serif;
+    font-size: 14.5px;
+    font-weight: 500;
+    color: var(--ink-soft);
+    padding: 0 0 12px;
+    white-space: nowrap;
+    position: relative;
+    cursor: pointer;
+  }
+  nav.tabs button.active { color: var(--ink); }
+  nav.tabs button.active::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 2px;
+    background: var(--accent, var(--wine));
+  }
+
+  /* ---------- Product list ---------- */
+  main { padding: 6px 20px 110px; }
+
+  .product {
+    display: grid;
+    grid-template-columns: 46px 1fr auto;
+    gap: 14px;
+    align-items: center;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--rule);
+    cursor: pointer;
+  }
+  .product:active { opacity: 0.7; }
+
+  .flacon {
+    width: 46px;
+    height: 46px;
+    flex-shrink: 0;
+  }
+
+  .product .brand {
+    display: block;
+    font-size: 11.5px;
+    letter-spacing: 0.08em;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    margin: 0 0 2px;
+  }
+  .product .name {
+    display: block;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 1.15;
+  }
+  .product .status {
+    font-size: 11.5px;
+    margin-top: 3px;
+    color: var(--sage);
+  }
+  .product.out .status { color: var(--out-of-stock); }
+  .product.out .name { color: var(--ink-soft); }
+
+  .product .price {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 19px;
+    font-weight: 600;
+    color: var(--brass);
+    white-space: nowrap;
+    text-align: right;
+  }
+  .product.out .price { color: var(--out-of-stock); }
+
+  /* ---------- Bottom cart bar ---------- */
+  .cart-bar {
+    position: fixed;
+    left: 16px; right: 16px; bottom: 16px;
+    background: var(--wine);
+    color: #fff;
+    border-radius: 14px;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 15px;
+    font-weight: 500;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+    transform: translateY(140%);
+    transition: transform 0.25s ease;
+    cursor: pointer;
+    z-index: 20;
+  }
+  .cart-bar.visible { transform: translateY(0); }
+  .cart-bar .count {
+    background: rgba(255,255,255,0.22);
+    border-radius: 999px;
+    padding: 2px 9px;
+    font-size: 12.5px;
+    margin-right: 8px;
+  }
+
+  /* ---------- Sheets (product detail / cart) ---------- */
+  .overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.4);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    z-index: 30;
+  }
+  .overlay.visible { opacity: 1; pointer-events: auto; }
+
+  .sheet {
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    background: var(--paper-raised);
+    border-radius: 20px 20px 0 0;
+    padding: 8px 22px calc(24px + env(safe-area-inset-bottom, 0));
+    transform: translateY(100%);
+    transition: transform 0.28s cubic-bezier(.32,.72,0,1);
+    z-index: 31;
+    max-height: 82vh;
+    overflow-y: auto;
+  }
+  .sheet.visible { transform: translateY(0); }
+  .sheet .handle {
+    width: 36px; height: 4px;
+    background: var(--rule);
+    border-radius: 999px;
+    margin: 10px auto 18px;
+  }
+
+  /* product sheet */
+  #productSheet .p-brand {
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin: 0 0 4px;
+  }
+  #productSheet .p-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 32px;
+    font-weight: 600;
+    margin: 0 0 10px;
+    line-height: 1.1;
+  }
+  #productSheet .p-price {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 24px;
+    color: var(--brass);
+    font-weight: 600;
+    margin: 0 0 4px;
+  }
+  #productSheet .p-status { font-size: 13px; color: var(--sage); margin: 0 0 22px; }
+  #productSheet .p-status.out { color: var(--out-of-stock); }
+
+  .btn {
+    display: block;
+    width: 100%;
+    border: none;
+    border-radius: 12px;
+    padding: 15px;
+    font-family: 'Work Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+  }
+  .btn-primary { background: var(--wine); color: #fff; }
+  .btn-primary:active { background: var(--wine-deep); }
+  .btn-disabled { background: var(--rule); color: var(--ink-soft); }
+
+  /* cart sheet */
+  #cartSheet h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 24px;
+    font-weight: 600;
+    margin: 0 0 16px;
+  }
+  .cart-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 12px;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .cart-row .ci-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 17px;
+    font-weight: 600;
+  }
+  .cart-row .ci-price { font-size: 12.5px; color: var(--ink-soft); }
+  .qty {
+    display: flex; align-items: center; gap: 10px;
+  }
+  .qty button {
+    width: 26px; height: 26px;
+    border-radius: 999px;
+    border: 1px solid var(--rule);
+    background: none;
+    color: var(--ink);
+    font-size: 15px;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .qty span { font-size: 14px; min-width: 14px; text-align: center; }
+  .cart-total {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding: 16px 0 20px;
+    font-size: 14px;
+    color: var(--ink-soft);
+  }
+  .cart-total strong {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .cart-empty {
+    text-align: center;
+    padding: 40px 0 20px;
+    color: var(--ink-soft);
+    font-size: 14px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <p class="wordmark">ESSENS</p>
+  <p class="tagline">Парфюмерная лавка</p>
+</header>
+
+<nav class="tabs" id="tabs"></nav>
+
+<main id="productList"></main>
+
+<div class="cart-bar" id="cartBar">
+  <span><span class="count" id="cartCount">0</span>в корзине</span>
+  <span id="cartTotal">0 Kč</span>
+</div>
+
+<div class="overlay" id="overlay"></div>
+
+<div class="sheet" id="productSheet">
+  <div class="handle"></div>
+  <p class="p-brand" id="pBrand"></p>
+  <p class="p-name serif" id="pName"></p>
+  <p class="p-price serif" id="pPrice"></p>
+  <p class="p-status" id="pStatus"></p>
+  <button class="btn btn-primary" id="pAddBtn">Добавить в корзину</button>
+</div>
+
+<div class="sheet" id="cartSheet">
+  <div class="handle"></div>
+  <h2>Ваша корзина</h2>
+  <div id="cartRows"></div>
+  <div id="cartFooter"></div>
+</div>
+
+<script>
+/* ====== Данные каталога (совпадают с ботом) ====== */
+const CATEGORY_ACCENT = { Luxury: 'var(--brass)', Men: 'var(--sage)', Women: 'var(--powder)' };
+const CATEGORY_LABEL = { Luxury: 'Luxury', Men: 'Men', Women: 'Women' };
+
+const FRAGRANCES = {
+  Luxury: [
+    { id: 1, name: "SANTAL 33", brand: "Le Labo", price: 2500, stock: true },
+    { id: 2, name: "BAL D'AFRIQUE", brand: "Nishane", price: 2200, stock: false },
+    { id: 3, name: "KIRKE", brand: "Nishane", price: 1495, stock: true },
+    { id: 4, name: "FLEUR NARCOTIQUE", brand: "Nishane", price: 3500, stock: true },
+  ],
+  Men: [
+    { id: 7, name: "AVENTUS", brand: "Creed", price: 5879, stock: true },
+    { id: 8, name: "SAUVAGE", brand: "Dior", price: 2064, stock: true },
+    { id: 9, name: "BLEU DE CHANEL", brand: "Chanel", price: 2200, stock: true },
+  ],
+  Women: [
+    { id: 11, name: "COCO MADEMOISELLE", brand: "Chanel", price: 2300, stock: true },
+    { id: 12, name: "J'ADORE", brand: "Dior", price: 2400, stock: true },
+    { id: 13, name: "LADY MILLION", brand: "Paco Rabanne", price: 2150, stock: true },
+  ],
+};
+const PRODUCTS_BY_ID = {};
+Object.values(FRAGRANCES).flat().forEach(p => PRODUCTS_BY_ID[p.id] = p);
+
+/* ====== Состояние ====== */
+let currentCategory = 'Luxury';
+let selectedProductId = null;
+const cart = {}; // id -> qty
+
+/* ====== Флакон-иконка (SVG, абстрактный, цвет по категории) ====== */
+function flaconSVG(color) {
+  return `<svg class="flacon" viewBox="0 0 46 46" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="17" y="4" width="12" height="7" rx="1.5" fill="${color}" opacity="0.85"/>
+    <rect x="19" y="1" width="8" height="4" rx="1" fill="${color}"/>
+    <path d="M14 14C14 12 15.5 11 18 11H28C30.5 11 32 12 32 14V38C32 41 29.5 43 26 43H20C16.5 43 14 41 14 38V14Z" stroke="${color}" stroke-width="2" fill="none"/>
+    <line x1="14" y1="24" x2="32" y2="24" stroke="${color}" stroke-width="1.2" opacity="0.5"/>
+  </svg>`;
+}
+
+/* ====== Рендер ====== */
+function renderTabs() {
+  const tabs = document.getElementById('tabs');
+  tabs.innerHTML = Object.keys(FRAGRANCES).map(cat => `
+    <button data-cat="${cat}" class="${cat === currentCategory ? 'active' : ''}" style="--accent:${CATEGORY_ACCENT[cat]}">
+      ${CATEGORY_LABEL[cat]}
+    </button>
+  `).join('');
+  tabs.querySelectorAll('button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      currentCategory = btn.dataset.cat;
+      renderTabs();
+      renderList();
+    });
+  });
+}
+
+function renderList() {
+  const list = document.getElementById('productList');
+  const accent = CATEGORY_ACCENT[currentCategory];
+  list.innerHTML = FRAGRANCES[currentCategory].map(p => `
+    <div class="product ${p.stock ? '' : 'out'}" data-id="${p.id}">
+      ${flaconSVG(p.stock ? accent : 'var(--out-of-stock)')}
+      <div>
+        <span class="brand">${p.brand}</span>
+        <span class="name">${p.name}</span>
+        <div class="status">${p.stock ? '· В наличии' : '· Нет в наличии'}</div>
+      </div>
+      <div class="price">${p.price.toLocaleString('ru-RU')} Kč</div>
+    </div>
+  `).join('');
+  list.querySelectorAll('.product').forEach(el => {
+    el.addEventListener('click', () => openProduct(parseInt(el.dataset.id)));
+  });
+}
+
+function openProduct(id) {
+  const p = PRODUCTS_BY_ID[id];
+  selectedProductId = id;
+  document.getElementById('pBrand').textContent = p.brand;
+  document.getElementById('pName').textContent = p.name;
+  document.getElementById('pPrice').textContent = p.price.toLocaleString('ru-RU') + ' Kč';
+  const statusEl = document.getElementById('pStatus');
+  statusEl.textContent = p.stock ? 'В наличии' : 'Нет в наличии';
+  statusEl.className = 'p-status' + (p.stock ? '' : ' out');
+  const addBtn = document.getElementById('pAddBtn');
+  if (p.stock) {
+    addBtn.textContent = 'Добавить в корзину';
+    addBtn.className = 'btn btn-primary';
+    addBtn.disabled = false;
+  } else {
+    addBtn.textContent = 'Нет в наличии';
+    addBtn.className = 'btn btn-disabled';
+    addBtn.disabled = true;
+  }
+  showSheet('productSheet');
+}
+
+function addToCart(id) {
+  cart[id] = (cart[id] || 0) + 1;
+  updateCartBar();
+  hideSheets();
+  try { Telegram.WebApp.HapticFeedback.notificationOccurred('success'); } catch (e) {}
+}
+
+function cartCount() {
+  return Object.values(cart).reduce((a, b) => a + b, 0);
+}
+function cartTotal() {
+  return Object.entries(cart).reduce((sum, [id, qty]) => sum + PRODUCTS_BY_ID[id].price * qty, 0);
+}
+
+function updateCartBar() {
+  const count = cartCount();
+  const bar = document.getElementById('cartBar');
+  document.getElementById('cartCount').textContent = count;
+  document.getElementById('cartTotal').textContent = cartTotal().toLocaleString('ru-RU') + ' Kč';
+  bar.classList.toggle('visible', count > 0);
+}
+
+function renderCart() {
+  const rows = document.getElementById('cartRows');
+  const footer = document.getElementById('cartFooter');
+  const ids = Object.keys(cart).filter(id => cart[id] > 0);
+
+  if (!ids.length) {
+    rows.innerHTML = '<div class="cart-empty">Корзина пока пуста</div>';
+    footer.innerHTML = '';
+    return;
+  }
+
+  rows.innerHTML = ids.map(id => {
+    const p = PRODUCTS_BY_ID[id];
+    const qty = cart[id];
+    return `
+      <div class="cart-row">
+        <div>
+          <div class="ci-name serif">${p.name}</div>
+          <div class="ci-price">${p.price.toLocaleString('ru-RU')} Kč</div>
+        </div>
+        <div class="qty">
+          <button data-act="dec" data-id="${id}">−</button>
+          <span>${qty}</span>
+          <button data-act="inc" data-id="${id}">+</button>
+        </div>
+        <div class="ci-price serif" style="font-size:16px;color:var(--brass)">${(p.price * qty).toLocaleString('ru-RU')} Kč</div>
+      </div>
+    `;
+  }).join('');
+
+  footer.innerHTML = `
+    <div class="cart-total">
+      <span>Итого</span>
+      <strong>${cartTotal().toLocaleString('ru-RU')} Kč</strong>
+    </div>
+    <button class="btn btn-primary" id="checkoutBtn">Оформить заказ</button>
+  `;
+
+  rows.querySelectorAll('button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.id;
+      if (btn.dataset.act === 'inc') cart[id]++;
+      else {
+        cart[id]--;
+        if (cart[id] <= 0) delete cart[id];
+      }
+      updateCartBar();
+      renderCart();
+    });
+  });
+
+  const checkoutBtn = document.getElementById('checkoutBtn');
+  if (checkoutBtn) checkoutBtn.addEventListener('click', checkout);
+}
+
+function checkout() {
+  const ids = Object.keys(cart).filter(id => cart[id] > 0);
+  if (!ids.length) return;
+
+  const lines = ids.map(id => {
+    const p = PRODUCTS_BY_ID[id];
+    const qty = cart[id];
+    return `${p.name} (${p.brand}) x${qty} — ${(p.price * qty).toLocaleString('ru-RU')} Kč`;
+  });
+  const total = cartTotal();
+  const orderText = ['Новый заказ ESSENS:', ...lines, `Итого: ${total.toLocaleString('ru-RU')} Kč`].join('\n');
+
+  try {
+    if (window.Telegram && Telegram.WebApp && Telegram.WebApp.sendData) {
+      Telegram.WebApp.sendData(orderText);
+      Telegram.WebApp.close();
+      return;
+    }
+  } catch (e) {
+    console.error(e);
+  }
+  // Фолбэк, если открыто не внутри Telegram (для отладки в обычном браузере)
+  alert('Открыто вне Telegram — заказ не может быть отправлен боту.\n\n' + orderText);
+}
+
+/* ====== Sheets управление ====== */
+function showSheet(id) {
+  document.getElementById('overlay').classList.add('visible');
+  document.getElementById(id).classList.add('visible');
+}
+function hideSheets() {
+  document.getElementById('overlay').classList.remove('visible');
+  document.getElementById('productSheet').classList.remove('visible');
+  document.getElementById('cartSheet').classList.remove('visible');
+}
+
+document.getElementById('overlay').addEventListener('click', hideSheets);
+document.getElementById('pAddBtn').addEventListener('click', () => {
+  if (selectedProductId !== null) addToCart(selectedProductId);
+});
+document.getElementById('cartBar').addEventListener('click', () => {
+  renderCart();
+  showSheet('cartSheet');
+});
+
+/* ====== Инициализация Telegram WebApp ====== */
+try {
+  if (window.Telegram && Telegram.WebApp) {
+    Telegram.WebApp.ready();
+    Telegram.WebApp.expand();
+  }
+} catch (e) {}
+
+renderTabs();
+renderList();
+updateCartBar();
+</script>
+
+<script>
+/* ====== Инлайн: telegram-web-app.js (официальный скрипт Telegram) ====== */
+// WebView
+(function () {
+  var eventHandlers = {};
+
+  var locationHash = '';
+  try {
+    locationHash = location.hash.toString();
+  } catch (e) {}
+
+  var initParams = urlParseHashParams(locationHash);
+  var storedParams = sessionStorageGet('initParams');
+  if (storedParams) {
+    for (var key in storedParams) {
+      if (typeof initParams[key] === 'undefined') {
+        initParams[key] = storedParams[key];
+      }
+    }
+  }
+  sessionStorageSet('initParams', initParams);
+
+  var isIframe = false, iFrameStyle;
+  try {
+    isIframe = (window.parent != null && window != window.parent);
+    if (isIframe) {
+      window.addEventListener('message', function (event) {
+        if (event.source !== window.parent) return;
+        try {
+          var dataParsed = JSON.parse(event.data);
+        } catch (e) {
+          return;
+        }
+        if (!dataParsed || !dataParsed.eventType) {
+          return;
+        }
+        if (dataParsed.eventType == 'set_custom_style') {
+          if (event.origin === 'https://web.telegram.org') {
+            iFrameStyle.innerHTML = dataParsed.eventData;
+          }
+        } else if (dataParsed.eventType == 'reload_iframe') {
+          try {
+            window.parent.postMessage(JSON.stringify({eventType: 'iframe_will_reload'}), '*');
+          } catch (e) {}
+          location.reload();
+        } else {
+          receiveEvent(dataParsed.eventType, dataParsed.eventData);
+        }
+      });
+      iFrameStyle = document.createElement('style');
+      document.head.appendChild(iFrameStyle);
+      try {
+        window.parent.postMessage(JSON.stringify({eventType: 'iframe_ready', eventData: {reload_supported: true}}), '*');
+      } catch (e) {}
+    }
+  } catch (e) {}
+
+  function urlSafeDecode(urlencoded) {
+    try {
+      urlencoded = urlencoded.replace(/\+/g, '%20');
+      return decodeURIComponent(urlencoded);
+    } catch (e) {
+      return urlencoded;
+    }
+  }
+
+  function urlParseHashParams(locationHash) {
+    locationHash = locationHash.replace(/^#/, '');
+    var params = {};
+    if (!locationHash.length) {
+      return params;
+    }
+    if (locationHash.indexOf('=') < 0 && locationHash.indexOf('?') < 0) {
+      params._path = urlSafeDecode(locationHash);
+      return params;
+    }
+    var qIndex = locationHash.indexOf('?');
+    if (qIndex >= 0) {
+      var pathParam = locationHash.substr(0, qIndex);
+      params._path = urlSafeDecode(pathParam);
+      locationHash = locationHash.substr(qIndex + 1);
+    }
+    var query_params = urlParseQueryString(locationHash);
+    for (var k in query_params) {
+      params[k] = query_params[k];
+    }
+    return params;
+  }
+
+  function urlParseQueryString(queryString) {
+    var params = {};
+    if (!queryString.length) {
+      return params;
+    }
+    var queryStringParams = queryString.split('&');
+    var i, param, paramName, paramValue;
+    for (i = 0; i < queryStringParams.length; i++) {
+      param = queryStringParams[i].split('=');
+      paramName = urlSafeDecode(param[0]);
+      paramValue = param[1] == null ? null : urlSafeDecode(param[1]);
+      params[paramName] = paramValue;
+    }
+    return params;
+  }
+
+  function urlAppendHashParams(url, addHash) {
+    var ind = url.indexOf('#');
+    if (ind < 0) {
+      return url + '#' + addHash;
+    }
+    var curHash = url.substr(ind + 1);
+    if (curHash.indexOf('=') >= 0 || curHash.indexOf('?') >= 0) {
+      return url + '&' + addHash;
+    }
+    if (curHash.length > 0) {
+      return url + '?' + addHash;
+    }
+    return url + addHash;
+  }
+
+  function postEvent(eventType, callback, eventData) {
+    if (!callback) {
+      callback = function () {};
+    }
+    if (eventData === undefined) {
+      eventData = '';
+    }
+    if (window.TelegramWebviewProxy !== undefined) {
+      TelegramWebviewProxy.postEvent(eventType, JSON.stringify(eventData));
+      callback();
+    }
+    else if (window.external && 'notify' in window.external) {
+      window.external.notify(JSON.stringify({eventType: eventType, eventData: eventData}));
+      callback();
+    }
+    else if (isIframe) {
+      try {
+        var trustedTarget = 'https://web.telegram.org';
+        trustedTarget = '*';
+        window.parent.postMessage(JSON.stringify({eventType: eventType, eventData: eventData}), trustedTarget);
+        callback();
+      } catch (e) {
+        callback(e);
+      }
+    }
+    else {
+      callback({notAvailable: true});
+    }
+  };
+
+  function receiveEvent(eventType, eventData) {
+    callEventCallbacks(eventType, function(callback) {
+      callback(eventType, eventData);
+    });
+  }
+
+  function callEventCallbacks(eventType, func) {
+    var curEventHandlers = eventHandlers[eventType];
+    if (curEventHandlers === undefined ||
+        !curEventHandlers.length) {
+      return;
+    }
+    for (var i = 0; i < curEventHandlers.length; i++) {
+      try {
+        func(curEventHandlers[i]);
+      } catch (e) {}
+    }
+  }
+
+  function onEvent(eventType, callback) {
+    if (eventHandlers[eventType] === undefined) {
+      eventHandlers[eventType] = [];
+    }
+    var index = eventHandlers[eventType].indexOf(callback);
+    if (index === -1) {
+      eventHandlers[eventType].push(callback);
+    }
+  };
+
+  function offEvent(eventType, callback) {
+    if (eventHandlers[eventType] === undefined) {
+      return;
+    }
+    var index = eventHandlers[eventType].indexOf(callback);
+    if (index === -1) {
+      return;
+    }
+    eventHandlers[eventType].splice(index, 1);
+  };
+
+  function sessionStorageSet(key, value) {
+    try {
+      window.sessionStorage.setItem('__telegram__' + key, JSON.stringify(value));
+      return true;
+    } catch(e) {}
+    return false;
+  }
+  function sessionStorageGet(key) {
+    try {
+      return JSON.parse(window.sessionStorage.getItem('__telegram__' + key));
+    } catch(e) {}
+    return null;
+  }
+
+  if (!window.Telegram) {
+    window.Telegram = {};
+  }
+  window.Telegram.WebView = {
+    initParams: initParams,
+    isIframe: isIframe,
+    onEvent: onEvent,
+    offEvent: offEvent,
+    postEvent: postEvent,
+    receiveEvent: receiveEvent,
+    callEventCallbacks: callEventCallbacks
+  };
+
+  window.Telegram.Utils = {
+    urlSafeDecode: urlSafeDecode,
+    urlParseQueryString: urlParseQueryString,
+    urlParseHashParams: urlParseHashParams,
+    urlAppendHashParams: urlAppendHashParams,
+    sessionStorageSet: sessionStorageSet,
+    sessionStorageGet: sessionStorageGet
+  };
+
+  window.TelegramGameProxy_receiveEvent = receiveEvent;
+  window.TelegramGameProxy = {
+    receiveEvent: receiveEvent
+  };
+})();
+
+// WebApp
+(function () {
+  var Utils = window.Telegram.Utils;
+  var WebView = window.Telegram.WebView;
+  var initParams = WebView.initParams;
+  var isIframe = WebView.isIframe;
+
+  var WebApp = {};
+  var webAppInitData = '', webAppInitDataUnsafe = {};
+  var themeParams = {}, colorScheme = 'light';
+  var webAppVersion = '6.0';
+  var webAppPlatform = 'unknown';
+  var webAppIsActive = true;
+  var webAppIsFullscreen = false;
+  var webAppIsOrientationLocked = false;
+  var webAppBackgroundColor = 'bg_color';
+  var webAppHeaderColorKey = 'bg_color';
+  var webAppHeaderColor = null;
+
+  if (initParams.tgWebAppData && initParams.tgWebAppData.length) {
+    webAppInitData = initParams.tgWebAppData;
+    webAppInitDataUnsafe = Utils.urlParseQueryString(webAppInitData);
+    for (var key in webAppInitDataUnsafe) {
+      var val = webAppInitDataUnsafe[key];
+      try {
+        if (val.substr(0, 1) == '{' && val.substr(-1) == '}' ||
+            val.substr(0, 1) == '[' && val.substr(-1) == ']') {
+          webAppInitDataUnsafe[key] = JSON.parse(val);
+        }
+      } catch (e) {}
+    }
+  }
+  var stored_theme_params = Utils.sessionStorageGet('themeParams');
+  if (initParams.tgWebAppThemeParams && initParams.tgWebAppThemeParams.length) {
+    var themeParamsRaw = initParams.tgWebAppThemeParams;
+    try {
+      var theme_params = JSON.parse(themeParamsRaw);
+      if (theme_params) {
+        setThemeParams(theme_params);
+      }
+    } catch (e) {}
+  }
+  if (stored_theme_params) {
+    setThemeParams(stored_theme_params);
+  }
+  if (initParams.tgWebAppVersion) {
+    webAppVersion = initParams.tgWebAppVersion;
+  }
+  if (initParams.tgWebAppPlatform) {
+    webAppPlatform = initParams.tgWebAppPlatform;
+  }
+
+  function onThemeChanged(eventType, eventData) {
+    if (eventData.theme_params) {
+      setThemeParams(eventData.theme_params);
+      receiveWebViewEvent('themeChanged');
+    }
+  }
+
+  function receiveWebViewEvent(eventType) {
+    var args = Array.prototype.slice.call(arguments);
+    eventType = args.shift();
+    WebView.callEventCallbacks('webview:' + eventType, function(callback) {
+      callback.apply(WebApp, args);
+    });
+  }
+
+  function onWebViewEvent(eventType, callback) {
+    WebView.onEvent('webview:' + eventType, callback);
+  };
+
+  function setCssProperty(name, value) {
+    var root = document.documentElement;
+    if (root && root.style && root.style.setProperty) {
+      root.style.setProperty('--tg-' + name, value);
+    }
+  }
+
+  function parseColorToHex(color) {
+    color += '';
+    var match;
+    if (match = /^\s*#([0-9a-f]{6})\s*$/i.exec(color)) {
+      return '#' + match[1].toLowerCase();
+    }
+    else if (match = /^\s*#([0-9a-f])([0-9a-f])([0-9a-f])\s*$/i.exec(color)) {
+      return ('#' + match[1] + match[1] + match[2] + match[2] + match[3] + match[3]).toLowerCase();
+    }
+    return false;
+  }
+
+  function isColorDark(rgb) {
+    rgb = rgb.replace(/[\s#]/g, '');
+    if (rgb.length == 3) {
+      rgb = rgb[0] + rgb[0] + rgb[1] + rgb[1] + rgb[2] + rgb[2];
+    }
+    var r = parseInt(rgb.substr(0, 2), 16);
+    var g = parseInt(rgb.substr(2, 2), 16);
+    var b = parseInt(rgb.substr(4, 2), 16);
+    var hsp = Math.sqrt(0.299 * (r * r) + 0.587 * (g * g) + 0.114 * (b * b));
+    return hsp < 120;
+  }
+
+  function setThemeParams(theme_params) {
+    var color;
+    for (var key in theme_params) {
+      if (color = parseColorToHex(theme_params[key])) {
+        themeParams[key] = color;
+        if (key == 'bg_color') {
+          colorScheme = isColorDark(color) ? 'dark' : 'light'
+          setCssProperty('color-scheme', colorScheme);
+        }
+        key = 'theme-' + key.split('_').join('-');
+        setCssProperty(key, color);
+      }
+    }
+    Utils.sessionStorageSet('themeParams', themeParams);
+  }
+
+  function versionCompare(v1, v2) {
+    if (typeof v1 !== 'string') v1 = '';
+    if (typeof v2 !== 'string') v2 = '';
+    v1 = v1.replace(/^\s+|\s+$/g, '').split('.');
+    v2 = v2.replace(/^\s+|\s+$/g, '').split('.');
+    var a = Math.max(v1.length, v2.length), i, p1, p2;
+    for (i = 0; i < a; i++) {
+      p1 = parseInt(v1[i]) || 0;
+      p2 = parseInt(v2[i]) || 0;
+      if (p1 == p2) continue;
+      if (p1 > p2) return 1;
+      return -1;
+    }
+    return 0;
+  }
+  function versionAtLeast(ver) {
+    return versionCompare(webAppVersion, ver) >= 0;
+  }
+
+  function byteLength(str) {
+    if (window.Blob) {
+      try { return new Blob([str]).size; } catch (e) {}
+    }
+    var s = str.length;
+    for (var i=str.length-1; i>=0; i--) {
+      var code = str.charCodeAt(i);
+      if (code > 0x7f && code <= 0x7ff) s++;
+      else if (code > 0x7ff && code <= 0xffff) s+=2;
+      if (code >= 0xdc00 && code <= 0xdfff) i--;
+    }
+    return s;
+  }
+
+  var HapticFeedback = (function() {
+    var hapticFeedback = {};
+    function triggerFeedback(params) {
+      if (!versionAtLeast('6.1')) {
+        return hapticFeedback;
+      }
+      WebView.postEvent('web_app_trigger_haptic_feedback', false, params);
+      return hapticFeedback;
+    }
+    hapticFeedback.impactOccurred = function(style) {
+      return triggerFeedback({type: 'impact', impact_style: style});
+    };
+    hapticFeedback.notificationOccurred = function(type) {
+      return triggerFeedback({type: 'notification', notification_type: type});
+    };
+    hapticFeedback.selectionChanged = function() {
+      return triggerFeedback({type: 'selection_change'});
+    };
+    return hapticFeedback;
+  })();
+
+  if (!window.Telegram) {
+    window.Telegram = {};
+  }
+
+  Object.defineProperty(WebApp, 'initData', { get: function(){ return webAppInitData; }, enumerable: true });
+  Object.defineProperty(WebApp, 'initDataUnsafe', { get: function(){ return webAppInitDataUnsafe; }, enumerable: true });
+  Object.defineProperty(WebApp, 'version', { get: function(){ return webAppVersion; }, enumerable: true });
+  Object.defineProperty(WebApp, 'platform', { get: function(){ return webAppPlatform; }, enumerable: true });
+  Object.defineProperty(WebApp, 'colorScheme', { get: function(){ return colorScheme; }, enumerable: true });
+  Object.defineProperty(WebApp, 'themeParams', { get: function(){ return themeParams; }, enumerable: true });
+  Object.defineProperty(WebApp, 'isActive', { get: function(){ return webAppIsActive; }, enumerable: true });
+  Object.defineProperty(WebApp, 'HapticFeedback', { value: HapticFeedback, enumerable: true });
+
+  WebApp.isVersionAtLeast = function(ver) { return versionAtLeast(ver); };
+  WebApp.onEvent = function(eventType, callback) { onWebViewEvent(eventType, callback); };
+  WebApp.sendData = function (data) {
+    if (!data || !data.length) {
+      throw Error('WebAppDataInvalid');
+    }
+    if (byteLength(data) > 4096) {
+      throw Error('WebAppDataInvalid');
+    }
+    WebView.postEvent('web_app_data_send', false, {data: data});
+  };
+  WebApp.ready = function () {
+    WebView.postEvent('web_app_ready');
+  };
+  WebApp.expand = function () {
+    WebView.postEvent('web_app_expand');
+  };
+  WebApp.close = function (options) {
+    options = options || {};
+    var req_params = {};
+    if (versionAtLeast('7.6') && options.return_back) {
+      req_params.return_back = true;
+    }
+    WebView.postEvent('web_app_close', false, req_params);
+  };
+
+  window.Telegram.WebApp = WebApp;
+
+  WebView.onEvent('theme_changed', onThemeChanged);
+  WebView.postEvent('web_app_request_theme');
+  WebView.postEvent('web_app_request_viewport');
+})();
+</script>
+</body>
+</html>
